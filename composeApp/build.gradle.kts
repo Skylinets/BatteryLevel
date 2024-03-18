@@ -1,3 +1,4 @@
+import org.jetbrains.compose.ComposePlugin.CommonComponentsDependencies.resources
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -27,7 +28,6 @@ kotlin {
     }
     
     sourceSets {
-        
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
@@ -46,11 +46,9 @@ kotlin {
 android {
     namespace = "com.skyline.battery"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-
     defaultConfig {
         applicationId = "com.skyline.battery"
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -61,6 +59,7 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            exclude ("META-INF/gradle/incremental.annotation.processors")
         }
     }
     buildTypes {
@@ -75,5 +74,15 @@ android {
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
     }
+}
+dependencies {
+    debugImplementation(libs.androidx.activity.ktx)
+    debugImplementation(libs.hilt.android)
+    debugImplementation(libs.hilt.compiler)
+    debugImplementation(libs.androidx.material)
+    debugImplementation(libs.androidx.core.ktx)
+    debugImplementation(libs.androidx.constraintlayout)
+    debugImplementation(libs.androidx.appcompat)
+    debugImplementation(libs.androidx.espresso.core)
 }
 

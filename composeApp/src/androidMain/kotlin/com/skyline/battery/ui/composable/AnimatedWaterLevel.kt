@@ -1,4 +1,4 @@
-package com.skyline.battery.ui
+package com.skyline.battery.ui.composable
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -8,12 +8,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AnimatedWaterLevel(progress: Float, isCharging: Boolean) {
+fun AnimatedWaterLevel(progress: Float, isCharging: Boolean, isFastCharging: Boolean) {
     var waterLevel by remember { mutableFloatStateOf(progress) }
 
     if (isCharging) {
@@ -25,6 +26,23 @@ fun AnimatedWaterLevel(progress: Float, isCharging: Boolean) {
                 animation = keyframes {
                     durationMillis = 1000
                     0.5f at 500
+                },
+                repeatMode = RepeatMode.Reverse
+            ), label = ""
+        )
+
+        LaunchedEffect(boilingOffset) {
+            waterLevel = boilingOffset
+        }
+    } else if (isFastCharging) {
+        val infiniteTransition = rememberInfiniteTransition()
+        val boilingOffset by infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = keyframes {
+                    durationMillis = 1000
+                    4f at 500
                 },
                 repeatMode = RepeatMode.Reverse
             ), label = ""
@@ -60,7 +78,7 @@ fun AnimatedWaterLevel(progress: Float, isCharging: Boolean) {
                 drawRect(
                     color = Color.Blue,
                     topLeft = Offset(size.width * 0.25f, size.height - waterOffset),
-                    size = androidx.compose.ui.geometry.Size(size.width * 0.5f, waterHeight),
+                    size = Size(size.width * 0.5f, waterHeight),
                 )
 
                 if (isCharging) {
